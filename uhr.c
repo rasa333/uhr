@@ -9,6 +9,7 @@
 #define HORP    '*'
 #define CIRCLE1 '#'
 #define CIRCLE2 '.'
+#define DIGITAL '#'
 
 
 char *rno[] = {"III","IV","V","VI","VII","VIII","IX","X","XI","XII","I","II"};
@@ -269,7 +270,7 @@ display_no(int x, int y, int number)
   for (i = 0 ; i < 48 ; i++) {
     if (!(i%8))
       gotoxy(x, y + i / 8);
-    putchar(no[number][i] == 'O' ? (i%2) ? '#' : '#' : ' ');
+    putchar(no[number][i] == 'O' ? (i%2) ? DIGITAL : DIGITAL : ' ');
   }
   fflush(stdout);
 }
@@ -388,7 +389,7 @@ choice()
 
   while(1) {
     if (kbhit()) {
-      switch(key()) {
+      switch(readkey()) {
       case 12:
 	clrscr();
 	o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
