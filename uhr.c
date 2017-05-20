@@ -11,7 +11,7 @@
 #define CIRCLE2 '.'
 #define DIGITAL '#'
 
-
+int digital = 0;
 char *rno[] = {"III","IV","V","VI","VII","VIII","IX","X","XI","XII","I","II"};
 
 char *no[] = {\
@@ -377,7 +377,6 @@ at_screen()
 
 choice()
 {
-  int digital = 0;
   o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
   
   if (!digital)
@@ -453,7 +452,12 @@ void adjust()
 {
   clrscr();
   initmap();
-  at_screen();
+  if (digital) {
+    display_no(17, 9, 10);
+    display_no(38, 9, 10);
+  } else {
+    at_screen();
+  }
   xmo = 0;
   ymo = 0;
   xho = 0;
