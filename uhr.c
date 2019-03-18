@@ -91,6 +91,12 @@ char *no[] = {\
         \
     OO  \
         ",
+"       \
+        \
+        \
+        \
+        \
+        ",
 };
 
 
@@ -281,21 +287,23 @@ dt()
 {
   if (tm->tm_hour != o_tm.tm_hour) {
     sprintf(buf,"%2.2d",tm->tm_hour);
-    display_no(3, 9, buf[0]-48);
-    display_no(11, 9, buf[1]-48);
+    display_no(3, 3, buf[0]-48);
+    display_no(11, 3, buf[1]-48);
   }
   if (tm->tm_min != o_tm.tm_min) {
     sprintf(buf,"%2.2d",tm->tm_min);
-    display_no(24,9,buf[0]-48);
-    display_no(32,9,buf[1]-48);
+    display_no(24,3,buf[0]-48);
+    display_no(32,3,buf[1]-48);
   }
-  if (tm->tm_sec != o_tm.tm_sec) {
-    sprintf(buf,"%2.2d",tm->tm_sec);
-    if (soc != buf[0]) {
-      display_no(45,9,buf[0]-48);
-      soc = buf[0];
+  if (show_secptr) {
+    if (tm->tm_sec != o_tm.tm_sec) {
+      sprintf(buf,"%2.2d",tm->tm_sec);
+      if (soc != buf[0]) {
+	display_no(45,3,buf[0]-48);
+	soc = buf[0];
+      }
+      display_no(53,3,buf[1]-48);
     }
-    display_no(53,9,buf[1]-48);
   }
 }
 
@@ -382,8 +390,8 @@ choice()
   if (!digital)
     at_screen();
   else {
-    display_no(19,9,10);
-    display_no(40,9,10);
+    display_no(19,3,10);
+    display_no(40,3,10);
   }
 
   while(1) {
@@ -393,8 +401,8 @@ choice()
 	clrscr();
 	o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
 	if (digital) {
-	  display_no(17,9,10);
-	  display_no(38,9,10);
+	  display_no(17,3,10);
+	  display_no(38,3,10);
 	} else {
 	  at_screen();
 	}
@@ -403,8 +411,8 @@ choice()
 	if (digital)
 	  break;
 	clrscr();
-	display_no(17,9,10);
-	display_no(38,9,10);
+	display_no(17,3,10);
+	display_no(38,3,10);
 	digital = 1;
 	o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
 	break;
@@ -418,8 +426,20 @@ choice()
 	break;
       case 's':
 	show_secptr =! show_secptr;
-	if (!show_secptr)
+	if (!show_secptr && !digital)
 	  line(mid_x,mid_y,mid_x+xso,mid_y+yso, 32);
+	if (!show_secptr && digital) {
+	  sprintf(buf,"%2.2d", tm->tm_sec);
+	  display_no(38, 3, 11);
+	  display_no(45, 3, 11);
+	  display_no(53, 3, 11);
+	}
+	if (show_secptr && digital) {
+	  sprintf(buf,"%2.2d", tm->tm_sec);
+	  display_no(38, 3, 10);
+	  display_no(45, 3, buf[0]-48);
+	  display_no(53, 3, buf[1]-48);
+	}
 	break;
       case 'q':
 	clrscr();
@@ -453,8 +473,9 @@ void adjust()
   clrscr();
   initmap();
   if (digital) {
-    display_no(17, 9, 10);
-    display_no(38, 9, 10);
+    display_no(17, 3, 10);
+    if (show_secptr)
+      display_no(38, 3, 10);
   } else {
     at_screen();
   }
