@@ -12,7 +12,7 @@
 #define DIGITAL '#'
 
 int digital = 0;
-char *rno[] = {"III","IV","V","VI","VII","VIII","IX","X","XI","XII","I","II"};
+char *rno[] = {"III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "I", "II"};
 
 char *no[] = {\
 " OOOOO \
@@ -105,8 +105,8 @@ int screen_set = 0;
 int line_cnt;
 char buf[2];
 char soc = 0;
-static struct tm *tm,o_tm;
-int xso=0,yso=0,i,x,y,xmo=0,ymo=0,xho=0,yho=0;
+static struct tm *tm, o_tm;
+int xso = 0, yso = 0, i, x, y, xmo = 0, ymo = 0, xho = 0, yho = 0;
 long t;
 int newmin = 0;
 int show_secptr = 1;
@@ -133,7 +133,7 @@ initmap()
   }
   
   for (h = 0 ; h < 3 ; h++)
-    for (i = 0; i < highest_xy ; i++)
+    for (i = 0 ; i < highest_xy ; i++)
       lines_mem[h][i] = 0;
 }
 
@@ -261,7 +261,6 @@ line(int x1, int y1, int new_x_cursor, int new_y_cursor, int ch)
 	}
     }
   }
-  gotoxy(0, 0);
   fflush(stdout);
 }
 
@@ -286,23 +285,23 @@ display_no(int x, int y, int number)
 dt()
 {
   if (tm->tm_hour != o_tm.tm_hour) {
-    sprintf(buf,"%2.2d",tm->tm_hour);
+    sprintf(buf, "%2.2d", tm->tm_hour);
     display_no(3, 3, buf[0]-48);
     display_no(11, 3, buf[1]-48);
   }
   if (tm->tm_min != o_tm.tm_min) {
-    sprintf(buf,"%2.2d",tm->tm_min);
-    display_no(24,3,buf[0]-48);
-    display_no(32,3,buf[1]-48);
+    sprintf(buf, "%2.2d", tm->tm_min);
+    display_no(24, 3, buf[0]-48);
+    display_no(32, 3, buf[1]-48);
   }
   if (show_secptr) {
     if (tm->tm_sec != o_tm.tm_sec) {
-      sprintf(buf,"%2.2d",tm->tm_sec);
+      sprintf(buf, "%2.2d", tm->tm_sec);
       if (soc != buf[0]) {
-	display_no(45,3,buf[0]-48);
+	display_no(45, 3, buf[0]-48);
 	soc = buf[0];
       }
-      display_no(53,3,buf[1]-48);
+      display_no(53, 3, buf[1]-48);
     }
   }
 }
@@ -390,8 +389,9 @@ choice()
   if (!digital)
     at_screen();
   else {
-    display_no(19,3,10);
-    display_no(40,3,10);
+    display_no(17, 3, 10);
+    if (show_secptr)
+      display_no(38, 3, 10);
   }
 
   while(1) {
@@ -401,8 +401,9 @@ choice()
 	clrscr();
 	o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
 	if (digital) {
-	  display_no(17,3,10);
-	  display_no(38,3,10);
+	  display_no(17, 3, 10);
+	  if (show_secptr)
+	    display_no(38, 3, 10);
 	} else {
 	  at_screen();
 	}
@@ -411,8 +412,9 @@ choice()
 	if (digital)
 	  break;
 	clrscr();
-	display_no(17,3,10);
-	display_no(38,3,10);
+	display_no(17, 3, 10);
+	if (show_secptr)
+	  display_no(38, 3, 10);
 	digital = 1;
 	o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
 	break;
@@ -427,15 +429,15 @@ choice()
       case 's':
 	show_secptr =! show_secptr;
 	if (!show_secptr && !digital)
-	  line(mid_x,mid_y,mid_x+xso,mid_y+yso, 32);
+	  line(mid_x, mid_y, mid_x+xso, mid_y+yso, 32);
 	if (!show_secptr && digital) {
-	  sprintf(buf,"%2.2d", tm->tm_sec);
+	  sprintf(buf, "%2.2d", tm->tm_sec);
 	  display_no(38, 3, 11);
 	  display_no(45, 3, 11);
 	  display_no(53, 3, 11);
 	}
 	if (show_secptr && digital) {
-	  sprintf(buf,"%2.2d", tm->tm_sec);
+	  sprintf(buf, "%2.2d", tm->tm_sec);
 	  display_no(38, 3, 10);
 	  display_no(45, 3, buf[0]-48);
 	  display_no(53, 3, buf[1]-48);
