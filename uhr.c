@@ -286,26 +286,40 @@ dt()
 {
   if (tm->tm_hour != o_tm.tm_hour) {
     sprintf(buf, "%2.2d", tm->tm_hour);
-    display_no(3, 3, buf[0]-48);
-    display_no(11, 3, buf[1]-48);
+    display_no(mid_x - 32, mid_y - 3, buf[0]-48);
+    display_no(mid_x - 24, mid_y - 3, buf[1]-48);
   }
   if (tm->tm_min != o_tm.tm_min) {
     sprintf(buf, "%2.2d", tm->tm_min);
-    display_no(24, 3, buf[0]-48);
-    display_no(32, 3, buf[1]-48);
+    display_no(mid_x - 8, mid_y - 3, buf[0]-48);
+    display_no(mid_x + 0, mid_y - 3, buf[1]-48);
   }
   if (show_secptr) {
     if (tm->tm_sec != o_tm.tm_sec) {
       sprintf(buf, "%2.2d", tm->tm_sec);
       if (soc != buf[0]) {
-	display_no(45, 3, buf[0]-48);
+	display_no(mid_x + 16, mid_y - 3, buf[0]-48);
 	soc = buf[0];
       }
-      display_no(53, 3, buf[1]-48);
+      display_no(mid_x + 24, mid_y - 3, buf[1]-48);
     }
   }
 }
 
+
+dt_screen()
+{
+  scrsize(&mid_x, &mid_y);
+  mid_x /= 2; 
+  mid_y /= 2;
+
+  if (!show_secptr)
+    mid_x += 10;
+
+  display_no(mid_x - 16, mid_y - 3, 10);
+  if (show_secptr)
+    display_no(mid_x + 8, mid_y - 3, 10);
+}
 
 
 at()
@@ -328,8 +342,8 @@ at()
     i = ((tm->tm_hour * 30) + tm->tm_min/2) - 90;
     x = cos((double)i/58)*(mid_x / 2.6);
     y = sin((double)i/58)*(mid_y / 2.2);
-    line(mid_x, mid_y, mid_x+xho, mid_y+yho, 32);
-    line(mid_x, mid_y, mid_x+x, mid_y+y, HORP);
+    line(mid_x, mid_y, mid_x + xho, mid_y + yho, 32);
+    line(mid_x, mid_y, mid_x + x, mid_y + y, HORP);
     xho = x;
     yho = y;
     newmin = 0;
@@ -339,8 +353,8 @@ at()
     i = tm->tm_sec * 6 - 90;
     x = cos((double)i/58)*(mid_x / 2.1);
     y = sin((double)i/58)*(mid_y / 1.9);
-    line(mid_x, mid_y, mid_x+xso, mid_y+yso, 32);
-    line(mid_x, mid_y, mid_x+x, mid_y+y, SECP);
+    line(mid_x, mid_y, mid_x + xso, mid_y + yso, 32);
+    line(mid_x, mid_y, mid_x + x, mid_y + y, SECP);
     xso = x;
     yso = y;
   }
@@ -388,11 +402,8 @@ choice()
   
   if (!digital)
     at_screen();
-  else {
-    display_no(17, 3, 10);
-    if (show_secptr)
-      display_no(38, 3, 10);
-  }
+  else
+    dt_screen();
 
   while(1) {
     if (kbhit()) {
@@ -401,9 +412,7 @@ choice()
 	clrscr();
 	o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
 	if (digital) {
-	  display_no(17, 3, 10);
-	  if (show_secptr)
-	    display_no(38, 3, 10);
+	  dt_screen();
 	} else {
 	  at_screen();
 	}
@@ -412,9 +421,7 @@ choice()
 	if (digital)
 	  break;
 	clrscr();
-	display_no(17, 3, 10);
-	if (show_secptr)
-	  display_no(38, 3, 10);
+	dt_screen();
 	digital = 1;
 	o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
 	break;
@@ -429,18 +436,18 @@ choice()
       case 's':
 	show_secptr =! show_secptr;
 	if (!show_secptr && !digital)
-	  line(mid_x, mid_y, mid_x+xso, mid_y+yso, 32);
+	  line(mid_x, mid_y, mid_x + xso, mid_y + yso, 32);
 	if (!show_secptr && digital) {
 	  sprintf(buf, "%2.2d", tm->tm_sec);
-	  display_no(38, 3, 11);
-	  display_no(45, 3, 11);
-	  display_no(53, 3, 11);
+	  display_no(mid_x + 8, mid_y - 3, 11);
+	  display_no(mid_x + 16, mid_y - 3, 11);
+	  display_no(mid_x + 24, mid_y - 3, 11);
 	}
 	if (show_secptr && digital) {
 	  sprintf(buf, "%2.2d", tm->tm_sec);
-	  display_no(38, 3, 10);
-	  display_no(45, 3, buf[0]-48);
-	  display_no(53, 3, buf[1]-48);
+	  display_no(mid_x + 8, mid_y - 3, 10);
+	  display_no(mid_x + 16, mid_y - 3, buf[0]-48);
+	  display_no(mid_x + 23, mid_y - 3, buf[1]-48);
 	}
 	break;
       case 'q':
@@ -474,13 +481,11 @@ void adjust()
 {
   clrscr();
   initmap();
-  if (digital) {
-    display_no(17, 3, 10);
-    if (show_secptr)
-      display_no(38, 3, 10);
-  } else {
+  if (digital)
+    dt_screen();
+  else
     at_screen();
-  }
+  
   xmo = 0;
   ymo = 0;
   xho = 0;
