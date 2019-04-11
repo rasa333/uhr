@@ -314,7 +314,7 @@ dt_screen()
   mid_y /= 2;
 
   if (!show_secptr)
-    mid_x += 10;
+    mid_x += 13;
 
   display_no(mid_x - 16, mid_y - 3, 10);
   if (show_secptr)
@@ -437,17 +437,10 @@ choice()
 	show_secptr =! show_secptr;
 	if (!show_secptr && !digital)
 	  line(mid_x, mid_y, mid_x + xso, mid_y + yso, 32);
-	if (!show_secptr && digital) {
-	  sprintf(buf, "%2.2d", tm->tm_sec);
-	  display_no(mid_x + 8, mid_y - 3, 11);
-	  display_no(mid_x + 16, mid_y - 3, 11);
-	  display_no(mid_x + 24, mid_y - 3, 11);
-	}
-	if (show_secptr && digital) {
-	  sprintf(buf, "%2.2d", tm->tm_sec);
-	  display_no(mid_x + 8, mid_y - 3, 10);
-	  display_no(mid_x + 16, mid_y - 3, buf[0]-48);
-	  display_no(mid_x + 23, mid_y - 3, buf[1]-48);
+	if (digital) {
+	  clrscr();
+	  o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
+	  dt_screen();
 	}
 	break;
       case 'q':
@@ -496,11 +489,35 @@ void adjust()
 }
 
 
-
-
-
-main()
+static void usage()
 {
+  printf("Usage: uhr [option(s)...]\n");
+  printf(" -h          help\n");
+  printf(" -s          disable second hand\n");
+  printf(" -d          enable digital watch\n");
+}
+
+
+int main(int argc, char **argv)
+{
+  int opt;
+  
+  while((opt = getopt(argc, argv, "ds")) != -1) {
+    switch(opt) {
+    case 'd':
+      digital = 1;
+      break;
+    case 's':
+      show_secptr = 0;
+      break;
+    case 'h':
+      usage();
+      exit(0);
+    default:
+      usage();
+      exit(0);
+    }
+  }
   lines_mem[0] = NULL;
   init_tcap();
   cursor_hide();
