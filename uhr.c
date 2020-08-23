@@ -13,6 +13,18 @@
 #define CIRCLE2 '.'
 #define DIGITAL '#'
 
+extern int init_tcap();
+extern void cursor_hide();
+extern void cursor_show();
+extern char readkey();
+extern int kbhit();
+extern void gotoxy(int x, int y);
+extern int scrsize(int *x, int *y);
+extern void clrscr();
+extern void signal_action(int sig, void (*handler)(int));
+extern void signal_unblock(int sig);
+extern void signal_block(int sig);
+
 int digital = 0;
 char *rno[] = {"III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "I", "II"};
 
@@ -120,7 +132,7 @@ int mid_x, mid_y, highest_xy;
 
 #define max(a, b)   (a > b ? a : b)
 
-initmap()
+void initmap()
 {
   int h, i;
 
@@ -139,7 +151,7 @@ initmap()
       lines_mem[h][i] = 0;
 }
 
-check_pos(int x, int y)
+int check_pos(int x, int y)
 {
   int i;
 
@@ -160,7 +172,7 @@ check_pos(int x, int y)
 }
 
 
-m_gotoxy(int x, int y, int ch)
+void m_gotoxy(int x, int y, int ch)
 {
   if (!check_pos(x, y))
     return;
@@ -174,7 +186,7 @@ m_gotoxy(int x, int y, int ch)
 }
 
 
-line(int x1, int y1, int new_x_cursor, int new_y_cursor, int ch)  
+void line(int x1, int y1, int new_x_cursor, int new_y_cursor, int ch)  
 {
   int x_dist;     
   int y_dist;     
@@ -270,7 +282,7 @@ line(int x1, int y1, int new_x_cursor, int new_y_cursor, int ch)
 
 
 
-display_no(int x, int y, int number)
+void display_no(int x, int y, int number)
 {
   int i;
 
@@ -284,7 +296,7 @@ display_no(int x, int y, int number)
 
 
 
-dt()
+void dt()
 {
   if (tm->tm_hour != o_tm.tm_hour) {
     sprintf(buf, "%2.2d", tm->tm_hour);
@@ -309,7 +321,7 @@ dt()
 }
 
 
-dt_screen()
+void dt_screen()
 {
   scrsize(&mid_x, &mid_y);
   mid_x /= 2; 
@@ -324,7 +336,7 @@ dt_screen()
 }
 
 
-at()
+void at()
 {
   tm->tm_hour = tm->tm_hour > 12 ? tm->tm_hour - 12 : tm->tm_hour;
 
@@ -363,7 +375,7 @@ at()
 }
 
 
-at_screen()
+void at_screen()
 {
   int i, a;
 
@@ -398,7 +410,7 @@ at_screen()
 
 
 
-choice()
+void choice()
 {
   o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
   

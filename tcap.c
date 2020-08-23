@@ -3,10 +3,16 @@
 #include <term.h>
 #include <termio.h>
 #include <signal.h>
+#include <unistd.h>
 
 
 #define FALSE 0
 #define TRUE  1
+
+extern void signal_action(int sig, void (*handler)(int));
+extern void signal_unblock(int sig);
+extern void signal_block(int sig);
+
 
 static char cap_buffer[2048], tcstrings[256];
 
@@ -233,9 +239,9 @@ int kbhit()
   return select (1, &rd, (fd_set *)0, (fd_set *)0, &timeout);
 }
 
-int readkey()
+char readkey()
 {
-  int c;
+  char c;
 
   read(0, &c, 1);
 
