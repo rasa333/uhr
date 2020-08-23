@@ -1,5 +1,5 @@
 objs   = uhr.o tcap.o signal.o
-LFLAGS = -ltermcap -lm
+LFLAGS = -lcurses -lm
 CC     = gcc -O3
 prg    = uhr
 

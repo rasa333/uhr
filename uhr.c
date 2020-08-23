@@ -3,6 +3,8 @@
 #include <time.h>
 #include <math.h>
 #include <signal.h>
+#include <termios.h>
+#include <unistd.h>
 
 #define SECP    '.'
 #define MINP    '+'
@@ -446,9 +448,7 @@ choice()
       case 'q':
 	clrscr();
 	cursor_show();
-	resetty();
-	exit(0);
-	break;
+	return;
       }
     }
     time(&t);
@@ -501,6 +501,7 @@ static void usage()
 int main(int argc, char **argv)
 {
   int opt;
+  struct termios tios, tios_reset;
   
   while((opt = getopt(argc, argv, "ds")) != -1) {
     switch(opt) {
@@ -521,9 +522,14 @@ int main(int argc, char **argv)
   lines_mem[0] = NULL;
   init_tcap();
   cursor_hide();
-  setty();
+
+  tcgetattr(0, &tios_reset);
+  cfmakeraw(&tios);
+  tcsetattr(0, 0, &tios);
+  
   signal_action(SIGWINCH, adjust);
   signal_block(SIGWINCH);
   clrscr();
   choice();
+  tcsetattr(0, 0, &tios_reset);
 }
