@@ -3,7 +3,7 @@ LFLAGS = -lcurses -lm
 CC     = gcc -O3
 prg    = uhr
 
-$(prg)     : $(objs)
+all $(prg)     : $(objs)
 	        $(CC) -s $(CFLAGS) -o $(prg) $(objs) $(LFLAGS)
 
 clean	   : 
