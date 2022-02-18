@@ -20,3 +20,14 @@ void signal_unblock(int sig)
     sigprocmask(SIG_UNBLOCK, &tmp_mask, NULL);
     sigdelset(&sigset_mask, sig);
 }
+
+
+void signal_action(int sig, void (*handler)(int))
+{
+    struct sigaction sact;
+
+    memset(&sact, 0, sizeof(sact));
+    sact.sa_handler = handler;
+    sact.sa_flags = SA_RESTART;
+    sigaction(sig, &sact, NULL);
+}
