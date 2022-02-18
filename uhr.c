@@ -522,7 +522,7 @@ int main(int argc, char **argv)
                 exit(0);
             default:
                 usage();
-                exit(0);
+                exit(1);
         }
     }
     lines_mem[0] = NULL;
