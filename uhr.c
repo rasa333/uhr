@@ -120,7 +120,7 @@ int line_cnt;
 char buf[2];
 char soc = 0;
 static struct tm *tm, o_tm;
-int xso = 0, yso = 0, i, x, y, xmo = 0, ymo = 0, xho = 0, yho = 0;
+int xso = 0, yso = 0, x, y, xmo = 0, ymo = 0, xho = 0, yho = 0;
 long t;
 int newmin = 0;
 int show_secptr = 1;
@@ -332,6 +332,8 @@ void dt_screen()
 
 void at()
 {
+    int i;
+
     tm->tm_hour = tm->tm_hour > 12 ? tm->tm_hour - 12 : tm->tm_hour;
 
     if (tm->tm_min != o_tm.tm_min) {
