@@ -404,7 +404,6 @@ void at_screen()
     }
 }
 
-
 void choice()
 {
     o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
