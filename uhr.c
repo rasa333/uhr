@@ -25,6 +25,7 @@ extern void signal_action(int sig, void (*handler)(int));
 extern void signal_unblock(int sig);
 extern void signal_block(int sig);
 
+
 int digital = 0;
 char *rno[] = {"III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "I", "II"};
 
