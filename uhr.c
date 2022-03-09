@@ -434,7 +434,7 @@ void choice()
             switch (readkey()) {
                 case 12:
                     clrscr();
-                    o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
+                    o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = soc = 99;
                     if (digital) {
                         dt_screen();
                     } else {
@@ -487,7 +487,7 @@ void adjust()
         at_screen();
 
     xmo = ymo = xho = yho = xso = yso = 0;
-    o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
+    o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = soc = 99;
 }
 
 
