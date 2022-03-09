@@ -414,7 +414,23 @@ void choice()
         dt_screen();
 
     while (1) {
-        if (kbhit()) {
+	signal_unblock(SIGWINCH);
+	time(&t);
+        tm = localtime(&t);
+        switch (digital) {
+            case 1:
+                dt();
+                break;
+            case 0:
+                at();
+                break;
+        }
+        o_tm.tm_hour = tm->tm_hour;
+        o_tm.tm_min = tm->tm_min;
+        o_tm.tm_sec = tm->tm_sec;
+	signal_block(SIGWINCH);
+
+	if (kbhit()) {
             switch (readkey()) {
                 case 12:
                     clrscr();
@@ -458,23 +474,7 @@ void choice()
                     return;
             }
         }
-        time(&t);
-        tm = localtime(&t);
-        switch (digital) {
-            case 1:
-                dt();
-                break;
-            case 0:
-                at();
-                break;
-        }
-        o_tm.tm_hour = tm->tm_hour;
-        o_tm.tm_min = tm->tm_min;
-        o_tm.tm_sec = tm->tm_sec;
-        signal_unblock(SIGWINCH);
-        sleep(1);
-        signal_block(SIGWINCH);
-    }
+     }
 }
 
 void adjust()
@@ -486,12 +486,7 @@ void adjust()
     else
         at_screen();
 
-    xmo = 0;
-    ymo = 0;
-    xho = 0;
-    yho = 0;
-    xso = 0;
-    yso = 0;
+    xmo = ymo = xho = yho = xso = yso = 0;
     o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
 }
 

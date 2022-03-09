@@ -231,8 +231,8 @@ int kbhit()
     FD_ZERO (&rd);
     FD_SET (0, &rd);
 
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 50;
+    timeout.tv_sec = 1;
+    timeout.tv_usec = 0;
 
     /* wait for input */
     return select(1, &rd, (fd_set *) 0, (fd_set *) 0, &timeout);
