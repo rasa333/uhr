@@ -447,7 +447,7 @@ void choice()
                     clrscr();
                     dt_screen();
                     digital = 1;
-                    o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
+                    o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = soc = 99;
                     break;
                 case 'a':
                     if (!digital)
@@ -463,7 +463,7 @@ void choice()
                         line(mid_x, mid_y, mid_x + xso, mid_y + yso, 32);
                     if (digital) {
                         clrscr();
-                        o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
+                        o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = soc = 99;
                         dt_screen();
                     }
                     break;
