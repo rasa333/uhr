@@ -16,6 +16,8 @@
 extern int init_tcap();
 extern void cursor_hide();
 extern void cursor_show();
+extern void standout();
+extern void standend();
 extern char readkey();
 extern int kbhit();
 extern void gotoxy(int x, int y);
@@ -29,88 +31,88 @@ int digital = 0;
 char *rno[] = {"III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "I", "II"};
 
 char *no[] = {\
-" OOOOO \
- O     O\
- O     O\
- O     O\
- O     O\
-  OOOOO ",
+" ----- \
+ |     |\
+ |     |\
+ |     |\
+ |     |\
+  -----  ",
 
-"    OO \
-    O O \
-   O  O \
-      O \
-      O \
-      O ",
+"    /| \
+    / | \
+   /  | \
+      | \
+      | \
+      |  ",
 
-"  OOO  \
-  O   O \
-     O  \
-    O   \
-   O    \
-  OOOOO ",
+"  ---  \
+  |   | \
+     |  \
+    |   \
+   |    \
+  -----  ",
 
-"  OOO  \
-  O   O \
-     O  \
-      O \
-  O   O \
-   OOO  ",
+"  ---  \
+  |   | \
+     -  \
+      | \
+  |   | \
+   ---   ",
 
-" O     \
-  O  O  \
-  O  O  \
-   OOOO \
-     O  \
-     O  ",
+" |     \
+  |  |  \
+  |  |  \
+   --+- \
+     |  \
+     |   ",
 
-"  OOOO \
-  O     \
-  OOOO  \
-      O \
-  O   O \
-   OOO  ",
+"  ---- \
+  |     \
+  +---  \
+      | \
+  |   | \
+   ---   ",
 
-"  OOO  \
-  O   O \
-  O     \
-  OOOO  \
-  O   O \
-   OOO  ",
+"  ---  \
+  |   | \
+  |     \
+  +---  \
+  |   | \
+   ---   ",
 
-" OOOOO \
-      O \
-     O  \
-  OOOOO \
-   O    \
-  O     ",
+" ----- \
+      / \
+     /  \
+  --+-- \
+   /    \
+  /      ",
 
-"  OOO  \
-  O   O \
-   OOO  \
-  O   O \
-  O   O \
-   OOO  ",
+"  ---  \
+  |   | \
+   ---  \
+  |   | \
+  |   | \
+   ---   ",
 
-"  OOO  \
-  O   O \
-   OOOO \
-      O \
-  O   O \
-   OOO  ",
+"  ---  \
+  |   | \
+   ---+ \
+      | \
+  |   | \
+   ---   ",
 
 "       \
-    OO  \
+    ##  \
         \
         \
-    OO  \
-        ",
+    ##  \
+         ",
 "       \
         \
         \
         \
         \
-        ",
+         ",
 };
 
 
@@ -284,7 +286,12 @@ void display_no(int x, int y, int number)
     for (i = 0; i < 48; i++) {
         if (!(i % 8))
             gotoxy(x, y + i / 8);
-        putchar(no[number][i] == 'O' ? (i % 2) ? DIGITAL : DIGITAL : ' ');
+	//        putchar(no[number][i] == 'O' ? (i % 2) ? DIGITAL : DIGITAL : ' ');
+	if (no[number][i] != ' ')
+	    standout();
+	putchar(' ');
+	if (no[number][i] != ' ')
+	    standend();
     }
     fflush(stdout);
 }
