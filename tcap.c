@@ -227,6 +227,7 @@ int kbhit()
 {
     struct timeval timeout;
     fd_set rd;
+    int r;
 
     FD_ZERO (&rd);
     FD_SET (0, &rd);
@@ -234,8 +235,11 @@ int kbhit()
     timeout.tv_sec = 1;
     timeout.tv_usec = 0;
 
-    /* wait for input */
-    return select(1, &rd, (fd_set *) 0, (fd_set *) 0, &timeout);
+    r = select(1, &rd, (fd_set *) 0, (fd_set *) 0, &timeout);
+    if (r < 0)
+	return 0;
+
+    return r;
 }
 
 char readkey()

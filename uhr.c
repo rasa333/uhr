@@ -413,6 +413,8 @@ void at_screen()
 
 void choice()
 {
+    int kb;
+    
     o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = 99;
 
     if (!digital)
@@ -421,7 +423,6 @@ void choice()
         dt_screen();
 
     while (1) {
-	signal_unblock(SIGWINCH);
 	time(&t);
         tm = localtime(&t);
         switch (digital) {
@@ -435,9 +436,11 @@ void choice()
         o_tm.tm_hour = tm->tm_hour;
         o_tm.tm_min = tm->tm_min;
         o_tm.tm_sec = tm->tm_sec;
+	
+	signal_unblock(SIGWINCH);
+	kb = kbhit();
 	signal_block(SIGWINCH);
-
-	if (kbhit()) {
+	if (kb) {
             switch (readkey()) {
                 case 12:
                     clrscr();
