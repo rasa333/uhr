@@ -208,7 +208,7 @@ void setty()
         ntio.c_iflag |= ICRNL;
         ntio.c_cc[VMIN] = 1;
         ntio.c_cc[VTIME] = 0;
-        ntio.c_cc[VINTR] = 0;
+        ntio.c_cc[VINTR] = 3;
         ioctl(0, TCSETAW, &ntio);
         __setty_called = TRUE;
     }

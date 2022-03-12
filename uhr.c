@@ -127,6 +127,7 @@ long t;
 int newmin = 0;
 int show_secptr = 1;
 int mid_x, mid_y, highest_xy;
+struct termios tios, tios_reset;
 
 #define SETSEC 0
 #define SETMIN 1
@@ -413,6 +414,27 @@ void at_screen()
     }
 }
 
+void adjust()
+{
+    clrscr();
+    initmap();
+    if (digital)
+        dt_screen();
+    else
+        at_screen();
+
+    xmo = ymo = xho = yho = xso = yso = 0;
+    o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = soc = 99;
+}
+
+void terminate()
+{
+    clrscr();
+    cursor_show();
+    tcsetattr(0, 0, &tios_reset);
+    exit(0);
+}
+
 void choice()
 {
     int kb;
@@ -440,8 +462,12 @@ void choice()
         o_tm.tm_sec = tm->tm_sec;
 	
 	signal_unblock(SIGWINCH);
+	signal_unblock(SIGINT);
+	signal_unblock(SIGTERM);
 	kb = kbhit();
 	signal_block(SIGWINCH);
+	signal_block(SIGINT);
+	signal_block(SIGTERM);
 	if (kb) {
             switch (readkey()) {
                 case 12:
@@ -481,25 +507,10 @@ void choice()
                     break;
                 case 'q':
                 case 3:
-                    clrscr();
-                    cursor_show();
-                    return;
-            }
+                    terminate();
+	    }
         }
      }
-}
-
-void adjust()
-{
-    clrscr();
-    initmap();
-    if (digital)
-        dt_screen();
-    else
-        at_screen();
-
-    xmo = ymo = xho = yho = xso = yso = 0;
-    o_tm.tm_hour = o_tm.tm_min = o_tm.tm_sec = soc = 99;
 }
 
 
@@ -515,7 +526,6 @@ static void usage()
 int main(int argc, char **argv)
 {
     int opt;
-    struct termios tios, tios_reset;
 
     while ((opt = getopt(argc, argv, "dsh")) != -1) {
         switch (opt) {
@@ -543,7 +553,10 @@ int main(int argc, char **argv)
 
     signal_action(SIGWINCH, adjust);
     signal_block(SIGWINCH);
+    signal_action(SIGINT, terminate);
+    signal_block(SIGINT);
+    signal_action(SIGTERM, terminate);
+    signal_block(SIGTERM);
     clrscr();
     choice();
-    tcsetattr(0, 0, &tios_reset);
 }
