@@ -9,10 +9,6 @@
 #define FALSE 0
 #define TRUE  1
 
-extern void signal_action(int sig, void (*handler)(int));
-extern void signal_unblock(int sig);
-extern void signal_block(int sig);
-
 
 static char cap_buffer[2048], tcstrings[256];
 
@@ -35,17 +31,6 @@ static int COLS, LINES;
 static int outchar(int c)
 {
     putchar(c);
-}
-
-
-static void adjust()
-{
-    struct winsize size;
-
-    if (ioctl(fileno(stdout), TIOCGWINSZ, &size) == 0) {
-        LINES = size.ws_row;
-        COLS = size.ws_col;
-    }
 }
 
 
@@ -77,8 +62,6 @@ int init_tcap()
 
     if (!CL || !CE || !CM || !CD)
         return 0;
-    signal_action(SIGWINCH, adjust);
-    signal_block(SIGWINCH);
 
     return 1;
 }
@@ -106,56 +89,6 @@ void gotoxy(int x, int y)
 {
     tputs(tgoto(CM, x, y), 1, outchar);
     fflush(stdout);
-}
-
-
-void clrtobot()
-{
-    tputs(CD, 1, outchar);
-    fflush(stdout);
-}
-
-
-void clrtoeol()
-{
-    tputs(CE, 1, outchar);
-    fflush(stdout);
-}
-
-
-void insertln()
-{
-    if (AL) {
-        tputs(AL, 1, outchar);
-        fflush(stdout);
-    }
-}
-
-
-void insert_n_lines(int y, int n)
-{
-    gotoxy(0, LINES - 1 - n);
-    clrtobot();
-    gotoxy(0, y);
-    while (n--)
-        insertln();
-}
-
-
-void deleteln()
-{
-    if (DL) {
-        tputs(DL, 1, outchar);
-        fflush(stdout);
-    }
-}
-
-
-void delete_n_lines(int y, int n)
-{
-    gotoxy(0, y);
-    while (n--)
-        deleteln();
 }
 
 
@@ -190,36 +123,6 @@ void cursor_show()
     if (VE) {
         tputs(VE, 1, outchar);
         fflush(stdout);
-    }
-}
-
-
-static int __setty_called = FALSE;
-static struct termio otio, ntio;
-
-void setty()
-{
-    if (!__setty_called) {
-        ioctl(0, TCGETA, &otio);
-        ntio = otio;
-        ntio.c_lflag &= ~ECHO;
-        ntio.c_lflag &= ~ICANON;
-        ntio.c_oflag |= ONLCR;
-        ntio.c_iflag |= ICRNL;
-        ntio.c_cc[VMIN] = 1;
-        ntio.c_cc[VTIME] = 0;
-        ntio.c_cc[VINTR] = 3;
-        ioctl(0, TCSETAW, &ntio);
-        __setty_called = TRUE;
-    }
-    ioctl(0, TCSETAW, &ntio);
-}
-
-
-void resetty()
-{
-    if (__setty_called) {
-        ioctl(0, TCSETAW, &otio);
     }
 }
 
