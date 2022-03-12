@@ -281,17 +281,19 @@ void line(int x1, int y1, int new_x_cursor, int new_y_cursor, int ch)
 
 void display_no(int x, int y, int number)
 {
-    int i;
+    int i, stdo = 0;
 
     for (i = 0; i < 48; i++) {
         if (!(i % 8))
             gotoxy(x, y + i / 8);
-	//        putchar(no[number][i] == 'O' ? (i % 2) ? DIGITAL : DIGITAL : ' ');
-	if (no[number][i] != ' ')
+	if (no[number][i] != ' ' && stdo == 0) {
 	    standout();
-	putchar(' ');
-	if (no[number][i] != ' ')
+	    stdo = 1;
+	} else if (no[number][i] == ' ' && stdo == 1) {
 	    standend();
+	    stdo = 0;
+	}
+	putchar(' ');
     }
     fflush(stdout);
 }
