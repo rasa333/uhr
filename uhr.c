@@ -428,7 +428,7 @@ void terminate()
     exit(0);
 }
 
-_Noreturn void choice()
+void choice()
 {
     int kb;
     
