@@ -1,6 +1,6 @@
 objs   = uhr.o tcap.o signal.o
 LFLAGS = -lcurses -lm
-CC     = gcc -O3
+CC     = gcc -O
 prg    = uhr
 
 all $(prg)     : $(objs)

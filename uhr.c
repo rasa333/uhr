@@ -428,7 +428,7 @@ void terminate()
     exit(0);
 }
 
-void choice()
+_Noreturn void choice()
 {
     int kb;
     
@@ -440,7 +440,7 @@ void choice()
         dt_screen();
 
     while (1) {
-	time(&t);
+	    time(&t);
         tm = localtime(&t);
         switch (digital) {
             case 1:
