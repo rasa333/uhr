@@ -1,15 +1,17 @@
-objs   = uhr.o tcap.o signal.o
-LFLAGS = -lcurses -lm
-CC     = gcc -O
-prg    = uhr
+CC             = gcc
+CFLAGS         = -O -Wunused
+LDFLAGS        = -s
+prg            = uhr
 
-all $(prg)     : $(objs)
-	        $(CC) -s $(CFLAGS) -o $(prg) $(objs) $(LFLAGS)
+%.o : %.c $(wildcard *.h)
+	$(CC) $(CFLAGS) -c $<
 
-clean	   : 
-	        rm -f $(prg) core *.o
- 
-	   
-uhr.o       : uhr.c Makefile
-tcap.o      : tcap.c Makefile
-signal.o    : signal.c Makefile
+objects        		     := $(patsubst %.c,%.o,$(wildcard *.c))
+
+all     : $(prg)
+
+$(prg)	: $(objects)
+	$(CC) $(LDFLAGS) -o $(prg) $(objects) -ltermcap -lm
+
+clean:
+	rm -f *.o $(prg)
