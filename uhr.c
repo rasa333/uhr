@@ -289,6 +289,8 @@ void display_no(int x, int y, int number)
 	}
 	putchar(' ');
     }
+    if (stdo == 1)
+	standend();
     fflush(stdout);
 }
 
@@ -440,7 +442,7 @@ void choice()
         dt_screen();
 
     while (1) {
-	    time(&t);
+	time(&t);
         tm = localtime(&t);
         switch (digital) {
             case 1:
